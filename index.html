@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Otter Gift Hunt 🦦🎁</title>
+  <style>
+    :root{
+      --bg1:#ffeef5;
+      --bg2:#e8f8ff;
+      --card:#ffffffcc;
+      --text:#4a3f35;
+      --accent:#ff9ecb;
+      --accent2:#7bdff2;
+      --danger:#ff6b6b;
+      --good:#35c759;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background:
+        radial-gradient(900px 600px at 15% 15%, #ffd6e8, transparent 60%),
+        radial-gradient(800px 550px at 85% 85%, #c9f2ff, transparent 55%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      color:var(--text);
+      overflow:hidden;
+      user-select:none;
+    }
+
+    .wrap{
+      width:min(920px, 94vw);
+      margin:18px auto;
+    }
+
+    .top{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      padding:14px 16px;
+      background:var(--card);
+      border-radius:18px;
+      box-shadow:0 14px 35px #00000020;
+      border:1px solid #0000000f;
+      backdrop-filter: blur(8px);
+    }
+
+    .title{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .otter{
+      font-size:34px;
+      filter: drop-shadow(0 6px 10px #00000020);
+    }
+    h1{
+      margin:0;
+      font-size:18px;
+      line-height:1.1;
+    }
+    .sub{
+      margin:3px 0 0;
+      opacity:.85;
+      font-size:13px;
+    }
+
+    .stats{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .pill{
+      background:#fff;
+      border:1px solid #00000012;
+      border-radius:999px;
+      padding:8px 12px;
+      font-size:13px;
+      box-shadow:0 10px 18px #00000010;
+      display:flex;
+      gap:8px;
+      align-items:center;
+      min-width:120px;
+      justify-content:center;
+    }
+    .btn{
+      border:none;
+      cursor:pointer;
+      border-radius:999px;
+      padding:10px 14px;
+      font-weight:800;
+      background:linear-gradient(90deg, var(--accent), var(--accent2));
+      color:#4a2c3b;
+      box-shadow:0 12px 18px #00000018;
+    }
+    .btn.secondary{
+      background:#ffffffc8;
+      border:1px solid #00000012;
+      box-shadow:0 10px 18px #00000010;
+      font-weight:700;
+    }
+
+    .game{
+      margin-top:14px;
+      position:relative;
+      height: min(68vh, 520px);
+      border-radius:24px;
+      background: rgba(255,255,255,.55);
+      border:1px solid #0000000f;
+      box-shadow:0 18px 45px #00000018;
+      overflow:hidden;
+    }
+
+    /* water waves */
+    .game::before{
+      content:"";
+      position:absolute;
+      inset:-40px;
+      background:
+        radial-gradient(600px 220px at 15% 30%, rgba(123,223,242,.40), transparent 60%),
+        radial-gradient(560px 230px at 85% 70%, rgba(255,158,203,.28), transparent 58%);
+      filter: blur(2px);
+      animation: drift 8s ease-in-out infinite;
+      pointer-events:none;
+    }
+    @keyframes drift{
+      0%,100%{ transform: translate(0,0) }
+      50%{ transform: translate(10px,-8px) }
+    }
+
+    .hint{
+      position:absolute;
+      left:14px;
+      top:12px;
+      padding:9px 12px;
+      border-radius:999px;
+      background:#ffffffd9;
+      border:1px solid #00000012;
+      font-size:13px;
+      box-shadow:0 10px 18px #00000010;
+      z-index:2;
+    }
+
+    .entity{
+      position:absolute;
+      width:56px;
+      height:56px;
+      display:grid;
+      place-items:center;
+      border-radius:16px;
+      cursor:pointer;
+      transform: translate(-50%,-50%);
+      z-index:3;
+      filter: drop-shadow(0 10px 10px #00000022);
+      animation: bob 1.3s ease-in-out infinite;
+    }
+    @keyframes bob{
+      0%,100%{ transform: translate(-50%,-50%) translateY(0); }
+      50%{ transform: translate(-50%,-50%) translateY(-7px); }
+    }
+
+    .gift{
+      background: #ffffffdd;
+      border: 1px solid #00000012;
+      font-size:28px;
+    }
+    .bubble{
+      background: rgba(255,255,255,.75);
+      border: 1px solid rgba(0,0,0,.06);
+      font-size:26px;
+      opacity:.95;
+    }
+
+    .pop{
+      position:absolute;
+      transform: translate(-50%,-50%);
+      font-weight:900;
+      font-size:14px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#fff;
+      border:1px solid #00000012;
+      box-shadow:0 10px 18px #00000012;
+      pointer-events:none;
+      z-index:4;
+      animation: floatFade .85s ease-out forwards;
+    }
+    @keyframes floatFade{
+      from{ opacity:1; transform:translate(-50%,-50%) translateY(0); }
+      to{ opacity:0; transform:translate(-50%,-50%) translateY(-26px); }
+    }
+
+    .overlay{
+      position:fixed;
+      inset:0;
+      display:none;
+      place-items:center;
+      background: rgba(0,0,0,.30);
+      padding:18px;
+      z-index:10;
+    }
+    .modal{
+      width:min(680px, 92vw);
+      background: rgba(255,255,255,.92);
+      border-radius:24px;
+      padding:18px;
+      box-shadow:0 26px 70px #00000040;
+      border:1px solid rgba(0,0,0,.12);
+      text-align:center;
+    }
+    .modal h2{ margin:8px 0 6px; }
+    .modal p{ margin:0; white-space:pre-wrap; line-height:1.55; }
+    .big-otter{ font-size:58px; }
+    .row{
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+    .small{
+      opacity:.8;
+      font-size:12px;
+      margin-top:10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div class="title">
+        <div class="otter">🦦</div>
+        <div>
+          <h1>Otter Gift Hunt for <span id="nameOut">You</span> 🎁</h1>
+          <div class="sub">Collect gifts to unlock the birthday surprise — from your sibling 🦦💖</div>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="pill">🎯 Goal: <b id="goalOut">10</b></div>
+        <div class="pill">⭐ Score: <b id="scoreOut">0</b></div>
+        <div class="pill">⏱️ Time: <b id="timeOut">25</b>s</div>
+        <button class="btn" id="startBtn">Start</button>
+        <button class="btn secondary" id="shareBtn">Copy Link</button>
+      </div>
+    </div>
+
+    <div class="game" id="game">
+      <div class="hint" id="hint">Tap gifts 🎁 (+1). Avoid bubbles 🫧 (−1). Reach 10!</div>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <div class="big-otter">🦦🎂</div>
+      <h2 id="winTitle">Happy Birthday!</h2>
+      <p id="winMsg"></p>
+      <div class="row">
+        <button class="btn" id="playAgainBtn">Play Again</button>
+        <button class="btn secondary" id="closeBtn">Close</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // ---- URL customization ----
+  const params = new URLSearchParams(location.search);
+  const name = (params.get("name") || "You").trim();
+  const message = params.get("msg") || (
+`Happy Birthday! 🦦🎉
+
+Wishing you an otter-ly amazing day full of smiles, laughter, and cake 🎂💗
+
+With love,
+Your sibling 🦦💖`
+  );
+
+  document.getElementById("nameOut").textContent = name;
+
+  // ---- game settings ----
+  const GOAL = Number(params.get("goal") || 10);
+  const TOTAL_TIME = Number(params.get("t") || 25);
+
+  const goalOut = document.getElementById("goalOut");
+  const scoreOut = document.getElementById("scoreOut");
+  const timeOut = document.getElementById("timeOut");
+  const game = document.getElementById("game");
+  const overlay = document.getElementById("overlay");
+  const winTitle = document.getElementById("winTitle");
+  const winMsg = document.getElementById("winMsg");
+
+  goalOut.textContent = GOAL;
+
+  let score = 0;
+  let timeLeft = TOTAL_TIME;
+  let timer = null;
+  let spawner = null;
+  let running = false;
+
+  function resetGame(){
+    score = 0;
+    timeLeft = TOTAL_TIME;
+    scoreOut.textContent = score;
+    timeOut.textContent = timeLeft;
+    clearEntities();
+    running = false;
+    clearInterval(timer);
+    clearInterval(spawner);
+    timer = null;
+    spawner = null;
+  }
+
+  function clearEntities(){
+    [...game.querySelectorAll(".entity,.pop")].forEach(el => el.remove());
+  }
+
+  function rand(min, max){ return Math.random()*(max-min)+min; }
+
+  function spawnEntity(type){
+    const rect = game.getBoundingClientRect();
+    const x = rand(10, 90);
+    const y = rand(18, 88);
+
+    const el = document.createElement("div");
+    el.className = "entity " + (type === "gift" ? "gift" : "bubble");
+    el.style.left = x + "%";
+    el.style.top = y + "%";
+    el.textContent = (type === "gift") ? "🎁" : "🫧";
+
+    // movement / lifetime
+    const life = (type === "gift") ? rand(900, 1500) : rand(800, 1400);
+    const dx = rand(-18, 18);
+    const dy = rand(-18, 18);
+    el.animate([
+      { transform:"translate(-50%,-50%) translate(0,0)" },
+      { transform:`translate(-50%,-50%) translate(${dx}px,${dy}px)` }
+    ], { duration: life, easing: "ease-in-out", fill:"forwards" });
+
+    const removeTimeout = setTimeout(()=>el.remove(), life+50);
+
+    el.addEventListener("click", (e)=>{
+      if(!running) return;
+      clearTimeout(removeTimeout);
+      const delta = (type === "gift") ? 1 : -1;
+      score = Math.max(0, score + delta);
+      scoreOut.textContent = score;
+
+      popText(el, delta);
+      el.remove();
+
+      if(score >= GOAL){
+        win(true);
+      }
+    });
+
+    game.appendChild(el);
+  }
+
+  function popText(target, delta){
+    const p = document.createElement("div");
+    p.className = "pop";
+    p.textContent = (delta > 0) ? `+${delta} ⭐` : `${delta} 💦`;
+    const x = parseFloat(target.style.left);
+    const y = parseFloat(target.style.top);
+    p.style.left = x + "%";
+    p.style.top = y + "%";
+    game.appendChild(p);
+    setTimeout(()=>p.remove(), 900);
+  }
+
+  function tick(){
+    timeLeft -= 1;
+    timeOut.textContent = timeLeft;
+    if(timeLeft <= 0){
+      win(false);
+    }
+  }
+
+  function start(){
+    if(running) return;
+    resetGame();
+    running = true;
+
+    // spawn immediately
+    for(let i=0;i<3;i++) spawnEntity("gift");
+    for(let i=0;i<2;i++) spawnEntity("bubble");
+
+    timer = setInterval(tick, 1000);
+    spawner = setInterval(()=>{
+      // more gifts than bubbles
+      spawnEntity(Math.random() < 0.7 ? "gift" : "bubble");
+    }, 430);
+  }
+
+  function win(didWin){
+    running = false;
+    clearInterval(timer);
+    clearInterval(spawner);
+
+    overlay.style.display = "grid";
+    if(didWin){
+      winTitle.textContent = `You did it, ${name}! 🎉`;
+      winMsg.textContent = message;
+      confetti();
+    }else{
+      winTitle.textContent = `Time’s up! 🫧`;
+      winMsg.textContent = `You got ${score}/${GOAL}.\n\nTap “Play Again” — you’re so close! 🦦`;
+    }
+  }
+
+  function confetti(){
+    // quick simple confetti: pop lots of emojis
+    for(let i=0;i<26;i++){
+      const el = document.createElement("div");
+      el.className = "entity";
+      el.style.left = rand(5,95) + "%";
+      el.style.top = "-5%";
+      el.style.background = "transparent";
+      el.style.border = "none";
+      el.style.boxShadow = "none";
+      el.style.width = "44px";
+      el.style.height = "44px";
+      el.style.fontSize = "26px";
+      el.textContent = ["✨","🎉","💖","🦦","🎂","🎁"][Math.floor(rand(0,6))];
+      game.appendChild(el);
+
+      const fall = rand(1400, 2200);
+      el.animate([
+        { transform:"translate(-50%,-50%) translateY(0) rotate(0deg)", opacity:1 },
+        { transform:`translate(-50%,-50%) translateY(${game.clientHeight + 90}px) rotate(540deg)`, opacity:0.95 }
+      ], { duration: fall, easing:"ease-in", fill:"forwards" });
+
+      setTimeout(()=>el.remove(), fall+60);
+    }
+  }
+
+  // ---- buttons ----
+  document.getElementById("startBtn").addEventListener("click", start);
+
+  document.getElementById("playAgainBtn").addEventListener("click", ()=>{
+    overlay.style.display = "none";
+    start();
+  });
+
+  document.getElementById("closeBtn").addEventListener("click", ()=>{
+    overlay.style.display = "none";
+  });
+
+  document.getElementById("shareBtn").addEventListener("click", async ()=>{
+    // keep/share current params (name + msg)
+    const p = new URLSearchParams();
+    p.set("name", name);
+    p.set("msg", message);
+    p.set("goal", String(GOAL));
+    p.set("t", String(TOTAL_TIME));
+    const url = location.origin + location.pathname + "?" + p.toString();
+
+    try{
+      await navigator.clipboard.writeText(url);
+      alert("Copied! Send this link:\n" + url);
+    }catch(e){
+      prompt("Copy this link:", url);
+    }
+  });
+</script>
+</body>
+</html>
